@@ -1,41 +1,48 @@
-name: html css langs actions
-
+name: langs_app_la
+#Triggers (events)
 on:
   push:
-    branches: ["main"]
-  # Allos us to run worflow from UI
-  workflow_dispatch:
-# Allows all permissions
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches: 
+      -main
 
+
+# functions (what needs to be done)
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
-      - name: Setup Node
+      - name: Install Node 16
         uses: actions/setup-node@v3
         with:
-          node-version: "16"
-      - name: Install Dependencies
-        run: npm ci
-      - name: Build Project
+          node-version: 16.x
+      - name: Install dependencies
+        run: npm i
+      - name: build project
         run: npm run build
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Upload artifact in order to deploy
+        uses: actions/upload-artifact@v2
         with:
+          name: production-files
           path: ./build
+
   deploy:
+    name: deploy
     runs-on: ubuntu-latest
     needs: build
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Deploy to Github pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: production-files
+          path: ./build
+
+      - name: Deploy to github pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{secrets.PROG_LANG_TOKEN}}
+          publish_dir: ./build
