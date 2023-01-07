@@ -2,10 +2,12 @@ name: langs_app_la
 #Triggers (events)
 on:
   push:
-  
-  pull_request:
-    branches:
-      - master
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 # functions (what needs to be done)
 jobs:
