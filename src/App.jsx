@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 
 const links = ["all", "html", "css", "javascript"];
-
+//fetching data
 const getData = async (searchTerm) => {
   let res = await fetch(
     `https://api.github.com/search/repositories?q=stars:%3E1+language:${searchTerm}`
